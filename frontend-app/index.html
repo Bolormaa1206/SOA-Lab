@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile Frontend</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #dbeafe, #e9d5ff);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 30px;
+        }
+
+        .header p {
+            margin-top: 8px;
+            font-size: 14px;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-radius: 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .section h2 {
+            margin-top: 0;
+            color: #1e293b;
+            font-size: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        button {
+            border: none;
+            padding: 12px 18px;
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            opacity: 0.95;
+        }
+
+        .btn-get { background: #2563eb; }
+        .btn-post { background: #16a34a; }
+        .btn-put { background: #f59e0b; }
+        .btn-delete { background: #dc2626; }
+        .btn-clear { background: #64748b; }
+
+        pre {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 18px;
+            border-radius: 14px;
+            min-height: 160px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .note {
+            font-size: 13px;
+            color: #475569;
+            margin-top: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            background: #f1f5f9;
+            color: #475569;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>User Profile Frontend App</h1>
+        <p>JSON REST Service + SOAP Authentication Integration</p>
+    </div>
+
+    <div class="content">
+
+        <div class="section">
+            <h2>Authentication</h2>
+            <div class="grid">
+                <div>
+                    <label>Authorization Token</label>
+                    <input type="text" id="token" value="sample-token-123" placeholder="Enter token">
+                </div>
+                <div>
+                    <label>User ID</label>
+                    <input type="text" id="userId" value="1" placeholder="Enter user id">
+                </div>
+            </div>
+            <p class="note">Default token: <b>sample-token-123</b></p>
+        </div>
+
+        <div class="section">
+            <h2>User Profile Form</h2>
+            <div class="grid">
+                <div>
+                    <label>ID</label>
+                    <input type="text" id="id" placeholder="User ID">
+                </div>
+                <div>
+                    <label>Name</label>
+                    <input type="text" id="name" placeholder="Full name">
+                </div>
+                <div>
+                    <label>Email</label>
+                    <input type="text" id="email" placeholder="Email">
+                </div>
+                <div>
+                    <label>Phone</label>
+                    <input type="text" id="phone" placeholder="Phone">
+                </div>
+            </div>
+            <div style="margin-top: 15px;">
+                <label>Bio</label>
+                <textarea id="bio" rows="4" placeholder="Write short bio"></textarea>
+            </div>
+
+            <div class="buttons">
+                <button class="btn-get" onclick="getUser()">GET User</button>
+                <button class="btn-post" onclick="createUser()">POST User</button>
+                <button class="btn-put" onclick="updateUser()">PUT User</button>
+                <button class="btn-delete" onclick="deleteUser()">DELETE User</button>
+                <button class="btn-clear" onclick="clearForm()">Clear Form</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Response</h2>
+            <pre id="result">Result will appear here...</pre>
+        </div>
+    </div>
+
+    <div class="footer">
+        Frontend for Lab 06 - JSON Service and SOAP Service Integration
+    </div>
+</div>
+
+<script>
+    const BASE_URL = "http://localhost:8081/users";
+
+    function getHeaders(includeJson = false) {
+        const token = document.getElementById("token").value;
+        const headers = {
+            "Authorization": token
+        };
+
+        if (includeJson) {
+            headers["Content-Type"] = "application/json";
+        }
+
+        return headers;
+    }
+
+    function getFormData() {
+        return {
+            id: document.getElementById("id").value,
+            name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
+            bio: document.getElementById("bio").value,
+            phone: document.getElementById("phone").value
+        };
+    }
+
+    function setResult(data) {
+        if (typeof data === "string") {
+            document.getElementById("result").textContent = data;
+        } else {
+            document.getElementById("result").textContent = JSON.stringify(data, null, 2);
+        }
+    }
+
+    function fillForm(data) {
+        if (!data || typeof data !== "object") return;
+        document.getElementById("id").value = data.id || "";
+        document.getElementById("name").value = data.name || "";
+        document.getElementById("email").value = data.email || "";
+        document.getElementById("bio").value = data.bio || "";
+        document.getElementById("phone").value = data.phone || "";
+    }
+
+    async function getUser() {
+        const userId = document.getElementById("userId").value;
+
+        try {
+            const response = await fetch(`${BASE_URL}/${userId}`, {
+                method: "GET",
+                headers: getHeaders()
+            });
+
+            const text = await response.text();
+
+            try {
+                const data = JSON.parse(text);
+                setResult(data);
+                fillForm(data);
+            } catch {
+                setResult(text);
+            }
+        } catch (error) {
+            setResult("Error: " + error.message);
+        }
+    }
+
+    async function createUser() {
+        const data = getFormData();
+
+        try {
+            const response = await fetch(BASE_URL, {
+                method: "POST",
+                headers: getHeaders(true),
+                body: JSON.stringify(data)
+            });
+
+            const text = await response.text();
+
+            try {
+                setResult(JSON.parse(text));
+            } catch {
+                setResult(text);
+            }
+        } catch (error) {
+            setResult("Error: " + error.message);
+        }
+    }
+
+    async function updateUser() {
+        const userId = document.getElementById("userId").value;
+        const data = getFormData();
+
+        try {
+            const response = await fetch(`${BASE_URL}/${userId}`, {
+                method: "PUT",
+                headers: getHeaders(true),
+                body: JSON.stringify(data)
+            });
+
+            const text = await response.text();
+
+            try {
+                setResult(JSON.parse(text));
+            } catch {
+                setResult(text);
+            }
+        } catch (error) {
+            setResult("Error: " + error.message);
+        }
+    }
+
+    async function deleteUser() {
+        const userId = document.getElementById("userId").value;
+
+        try {
+            const response = await fetch(`${BASE_URL}/${userId}`, {
+                method: "DELETE",
+                headers: getHeaders()
+            });
+
+            const text = await response.text();
+            setResult(text);
+        } catch (error) {
+            setResult("Error: " + error.message);
+        }
+    }
+
+    function clearForm() {
+        document.getElementById("id").value = "";
+        document.getElementById("name").value = "";
+        document.getElementById("email").value = "";
+        document.getElementById("bio").value = "";
+        document.getElementById("phone").value = "";
+        document.getElementById("result").textContent = "Result will appear here...";
+    }
+</script>
+
+</body>
+</html>
