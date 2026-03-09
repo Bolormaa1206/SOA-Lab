@@ -30,8 +30,8 @@ public class UserController {
 		this.soapAuthClient = soapAuthClient;
 
 		// sample user
-		users.put("1",
-				new UserProfile("1", "Bolormaa", "bolormaa@gmail.com", "Software engineering student", "99112233"));
+		users.put("1 ", new UserProfile("1", "Bolormaa", "bolormaabatbayr12@gmail.com", "Software engineering student",
+				"99112233"));
 	}
 
 	// CREATE
