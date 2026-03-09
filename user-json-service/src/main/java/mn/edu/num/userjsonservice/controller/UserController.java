@@ -3,6 +3,7 @@ package mn.edu.num.userjsonservice.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import mn.edu.num.userjsonservice.model.UserProfile;
 import mn.edu.num.userjsonservice.service.SoapAuthClient;
+
+@CrossOrigin(origins = "*")
 
 @RestController
 @RequestMapping("/users")
