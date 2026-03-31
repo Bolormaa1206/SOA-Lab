@@ -89,7 +89,7 @@
                         <source>src/main/resources/schema/auth.xsd</source>
                     </sources>
                     <packageName>mn.edu.num.auth</packageName>
-                    <outputDirectory>${project.basedir}/src/main/java</outputDirectory>
+                    <outputDirectory>${project.build.directory}/generated-sources/jaxb</outputDirectory>
                 </configuration>
             </plugin>
 
