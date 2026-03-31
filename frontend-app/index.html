@@ -207,7 +207,7 @@
 </div>
 
 <script>
-    const BASE_URL = "http://localhost:8081/users";
+    const BASE_URL = "https://lobster-app-ctlc2.ondigitalocean.app/users";
 
     function getHeaders(includeJson = false) {
         const token = document.getElementById("token").value;
@@ -251,15 +251,12 @@
 
     async function getUser() {
         const userId = document.getElementById("userId").value;
-
         try {
             const response = await fetch(`${BASE_URL}/${userId}`, {
                 method: "GET",
                 headers: getHeaders()
             });
-
             const text = await response.text();
-
             try {
                 const data = JSON.parse(text);
                 setResult(data);
@@ -274,16 +271,13 @@
 
     async function createUser() {
         const data = getFormData();
-
         try {
             const response = await fetch(BASE_URL, {
                 method: "POST",
                 headers: getHeaders(true),
                 body: JSON.stringify(data)
             });
-
             const text = await response.text();
-
             try {
                 setResult(JSON.parse(text));
             } catch {
@@ -297,16 +291,13 @@
     async function updateUser() {
         const userId = document.getElementById("userId").value;
         const data = getFormData();
-
         try {
             const response = await fetch(`${BASE_URL}/${userId}`, {
                 method: "PUT",
                 headers: getHeaders(true),
                 body: JSON.stringify(data)
             });
-
             const text = await response.text();
-
             try {
                 setResult(JSON.parse(text));
             } catch {
@@ -319,13 +310,11 @@
 
     async function deleteUser() {
         const userId = document.getElementById("userId").value;
-
         try {
             const response = await fetch(`${BASE_URL}/${userId}`, {
                 method: "DELETE",
                 headers: getHeaders()
             });
-
             const text = await response.text();
             setResult(text);
         } catch (error) {
